@@ -20,7 +20,7 @@ class Sudoku {
     void solve();
   private:
     bool equal_test();
-    int DFS();
+    bool DFS();
 
   private:
     int filled = 0;

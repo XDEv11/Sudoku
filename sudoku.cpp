@@ -287,8 +287,7 @@ restart:
     return true;
 }
 
-int Sudoku::DFS() {
-    if (equal_test() == false) return -1;
+bool Sudoku::DFS() {
     int i, j, row, column, subgrid_row, subgrid_column, least_possibility = 10, r, c, rec_n, f = filled;
     int rec_m[81], rec_nop[81];
     bool rec_poss[729];
@@ -305,42 +304,40 @@ int Sudoku::DFS() {
                     c = column;
                 }
             }
-        do {
-            for (int n = 1; n < 10; ++n)//try to fill this block
-                if(poss[r * 81 + c * 9 + (n - 1)] == true) {
-                    rec_n = m[r * 9 + c] = n;//
-                    for (int i = 1; i < 10; ++i) poss[r * 81 + c * 9 + (i - 1)] = false;
-                    nop[r * 9 + c] = -1;
-                    ++filled;
-                    set(r, c, n);
-                    break;
-                }
-            if (DFS() == -1) {//wrong try, return to the last status
-                rec_poss[r * 81 + c * 9 + (rec_n - 1)] = false;//impossible
-                --rec_nop[r * 9 + c];
-                for (row = 0; row < 9; ++row)
-                    for (column = 0; column < 9; ++column) {
-                        m[row * 9 + column] = rec_m[row * 9 + column];
-                        nop[row * 9 + column] = rec_nop[row * 9 + column];
-                        for (i = 1; i < 10; ++i)
-                            poss[row * 81 + column * 9 + (i - 1)] = rec_poss[row * 81 + column * 9 + (i - 1)];
-                    }
-                filled = f;
-            } else return 0;
-        } while (nop[r * 9 + c]);
-        return -1;
+        for (int n = 1; n < 10; ++n) {
+            if(poss[r * 81 + c * 9 + (n - 1)] == true) {//try to fill this block
+                rec_n = m[r * 9 + c] = n;//
+                for (int i = 1; i < 10; ++i) poss[r * 81 + c * 9 + (i - 1)] = false;
+                nop[r * 9 + c] = -1;
+                ++filled;
+                set(r, c, n);
+                if (equal_test() == false || DFS() == true) {//wrong try, return to the last status
+                    //rec_poss[r * 81 + c * 9 + (rec_n - 1)] = false;//impossible
+                    //--rec_nop[r * 9 + c];
+                    for (row = 0; row < 9; ++row)
+                        for (column = 0; column < 9; ++column) {
+                            m[row * 9 + column] = rec_m[row * 9 + column];
+                            nop[row * 9 + column] = rec_nop[row * 9 + column];
+                            for (i = 1; i < 10; ++i)
+                                poss[row * 81 + column * 9 + (i - 1)] = rec_poss[row * 81 + column * 9 + (i - 1)];
+                        }
+                    filled = f;
+                } else return false;
+            }
+        }
+        return true;
     } else {//find a solution
         ++number_of_solution;
         if(number_of_solution == 1) {//first_solution
             for (row = 0; row < 9; ++row)
                 for (column = 0; column < 9; ++column) first_s[row * 9 + column] = m[row * 9 + column];
-            return -1;
-        } else return 0;
+            return true;
+        } else return false;
     }
 }
 void Sudoku::solve() {
     int rec_m[81], rec_nop[81];
-    bool rec_poss[729], flag = true;
+    bool rec_poss[729];
     for (int row = 0; row < 9; ++row)//record
         for (int column = 0; column < 9; ++column) {
             rec_m[row * 9 + column] = m[row * 9 + column];
@@ -353,14 +350,9 @@ void Sudoku::solve() {
             if (m[row * 9 + column]) {
                 set(row, column, m[row * 9 + column]);
             }
-    if (equal_test() == false) {
-        number_of_solution = 0;
-        flag = false;
-    } else if(filled < 17) {
-        number_of_solution = 2;
-        flag = false;
-    }
-    if (flag) DFS();
+    if (equal_test() == false) number_of_solution = 0;
+    else if(filled < 17) number_of_solution = 2;
+    else DFS();
     for (int row = 0; row < 9; ++row)//resume
         for (int column = 0; column < 9; ++column) {
             m[row * 9 + column] = rec_m[row * 9 + column];
