@@ -1,17 +1,22 @@
 #include "sudoku.h"
 #include <iostream>
-#include <ctime>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 int main() {
-    ios_base::sync_with_stdio (false);
-    cin.tie (0);
-    Sudoku s;
-    while(s.read()) {
-        s.solve();
-        s.write_s();
-    }
-    cout << "\ntime used = " << (float)clock() / CLOCKS_PER_SEC << "(s)\n";
-    return 0;
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	auto b = system_clock::now();
+	Sudoku s;
+	while (s.read()) {
+		s.printQ();
+		s.solve();
+		s.printSol();
+	}
+	auto e = system_clock::now();
+	cout << duration_cast<milliseconds>(e - b).count() << " ms\n";
+	return 0;
 }

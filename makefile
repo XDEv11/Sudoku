@@ -1,21 +1,10 @@
-all: generate transform solve
-generate: sudoku.h sudoku.cpp generate.cpp
-	astyle --style=google --indent=spaces=4 --suffix=none sudoku.h sudoku.cpp generate.cpp
-	g++ -c sudoku.cpp
-	g++ -c generate.cpp
-	g++ sudoku.o generate.o -o generate
-	rm *.o
-transform: sudoku.h sudoku.cpp transform.cpp
-	astyle --style=google --indent=spaces=4 --suffix=none  sudoku.h sudoku.cpp transform.cpp
-	g++ -c sudoku.cpp
-	g++ -c transform.cpp
-	g++ sudoku.o transform.o -o transform
-	rm *.o
-solve: sudoku.h sudoku.cpp solve.cpp
-	astyle --style=google --indent=spaces=4 --suffix=none sudoku.h sudoku.cpp solve.cpp
-	g++ -c sudoku.cpp
-	g++ -c solve.cpp
+all: solve
+solve: sudoku.o solve.o
 	g++ sudoku.o solve.o -o solve
-	rm *.o
+sudoku.o: sudoku.h sudoku.cpp
+	g++ -c sudoku.cpp -Ofast
+solve.o: sudoku.h solve.cpp
+	g++ -c solve.cpp
 clean:
-	rm generate transform solve
+	rm *.o
+	rm solve

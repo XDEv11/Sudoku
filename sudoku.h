@@ -1,35 +1,33 @@
 #ifndef SUDOKU_H
 #define SUDOKU_H
+
+#include <array>
+using std::array;
+
 class Sudoku {
-  public:
-    bool read();
-    void write();
-    void write_s();
+	template<typename T>
+	using board = array<array<T, 9>, 9>;
 
-    // generate
-    static Sudoku generate();
+public:
+	explicit Sudoku() =default;
+	bool read();
+	void printQ();
+	void printSol();
+	void solve();
 
-    // transform
-    void swapNum(int, int);
-    void swapRow(int, int);
-    void swapCol(int, int);
-    void rotate(int);
-    void flip(int);
+private:
+	bool checkAndFill();
+	bool DFS();
 
-    // solve
-    void solve();
-  private:
-    bool equal_test();
-    bool DFS();
-
-  private:
-    int filled = 0;
-    int m[81];
-    int nop[81];//the number of possible numbers to fill in.
-    bool poss[729];//possible number to fill in~if n is the possible number to fill in, then poss[row * 81+column * 9+ (n-1) ] is true;
-    int number_of_solution = 0;//0 for none, 1 for solo, 2 for multiple.
-    int first_s[81];
-    void set(int, int, int);
+	board<int> grid;
+	bool canBeSolved{false};
+	int filled;
+	int numOfSol;
+	board<int> firstSol;
+	board<int> cnt; // the number of possible numbers to fill in
+	board<array<bool, 9>> poss; // poss[][i] == true implies number i+1 is possible for this entry
+	void set(int, int, int);
+	void fill(int, int, int);
 
 };
 #endif
