@@ -5,10 +5,10 @@
 using std::array;
 
 class Sudoku {
+public:
 	template<typename T>
 	using board = array<array<T, 9>, 9>;
 
-public:
 	explicit Sudoku() =default;
 	bool read();
 	void printQ();

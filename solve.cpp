@@ -10,13 +10,14 @@ int main() {
 	cin.tie(nullptr);
 
 	auto b = system_clock::now();
-	Sudoku s;
+	Sudoku s{};
 	while (s.read()) {
-		s.printQ();
+		// s.printQ();
 		s.solve();
 		s.printSol();
 	}
 	auto e = system_clock::now();
 	cout << duration_cast<milliseconds>(e - b).count() << " ms\n";
+
 	return 0;
 }

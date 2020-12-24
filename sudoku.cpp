@@ -7,7 +7,7 @@ using namespace std;
 bool Sudoku::read() {
     filled = 0;
     numOfSol = 0;
-    for (int r{0}; r < 9; ++r)
+    for (int r{0}; r < 9; ++r) {
         for (int c{0}; c < 9; ++c) {
             if (!(cin >> grid[r][c]) || grid[r][c] < 0 || grid[r][c] > 9) return false; // EOF or out of range
             if (grid[r][c]) {
@@ -19,8 +19,15 @@ bool Sudoku::read() {
                 for (int n{1}; n <= 9; ++n) poss[r][c][n - 1] = true;
             }
         }
+	}
 	canBeSolved = true;
     return true;
+}
+
+inline void plain_print(const Sudoku::board<int>& b) {
+	for (int r{0}; r < 9; ++r)
+		for (int c{0}; c < 9; ++c)
+			cout << b[r][c] << " \n"[c == 8];
 }
 
 inline void print(const Sudoku::board<int>& b) {
@@ -45,9 +52,12 @@ void Sudoku::printQ() { // write question
 void Sudoku::printSol() { // write solution
     if (numOfSol == 0) cout << "No solution.\n";
 	else if (numOfSol == 1) {
-			cout << "Unique solution.\n";
-			print(firstSol);
-	} else cout << "Multiple solutions.\n";
+		cout << "Unique solution.\n";
+		print(firstSol);
+	} else {
+		cout << "Multiple solutions.\n";
+		print(firstSol);
+	}
 }
 
 void Sudoku::set(int r, int c, int n) {
@@ -72,7 +82,7 @@ void Sudoku::set(int r, int c, int n) {
 
 void Sudoku::fill(int r, int c, int n) {
 	grid[r][c] = n;
-	for (int n{1}; n <= 9; ++n) poss[r][c][n - 1] = false;
+	for (int i{1}; i <= 9; ++i) poss[r][c][i - 1] = false;
 	cnt[r][c] = -1;
 	++filled;
 	set(r, c, n);
@@ -138,7 +148,7 @@ CONTINUE:
 			for (int n{1}; n <= 9; ++n) test[n - 1] = 0;
 			for (int r{3 * sr}; r < 3 * sr + 3; ++r)
 				for (int c{3 * sc}; c < 3 * sc + 3; ++c)
-					for (int n{1}; n <= 10; ++n)
+					for (int n{1}; n <= 9; ++n)
 						if (poss[r][c][n - 1]) test[n - 1] += 1;
 			for (int r{3 * sr}; r < 3 * sr + 3; ++r)
 				for (int c{3 * sc}; c < 3 * sc + 3; ++c)
@@ -205,7 +215,7 @@ void Sudoku::solve() {
 		for (int c{0}; c < 9; ++c)
 			if (grid[r][c]) set(r, c, grid[r][c]);
 	if (checkAndFill() == false) numOfSol = 0;
-	else if (filled < 17) numOfSol = 2;
+	//else if (filled < 17) numOfSol = 2;
 	else DFS();
 
 	canBeSolved = false;

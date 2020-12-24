@@ -1,10 +1,15 @@
+# Provided by D4nnyLee
+
+# Pre-defined variables for implicit rules
+CXX := g++
+CXXFLAGS := -std=c++17 -Ofast #-Wall -Wextra --debug -fsanitize=address,undefined -D_GLIBCXX_DEBUG
+
 all: solve
-solve: sudoku.o solve.o
-	g++ sudoku.o solve.o -o solve
-sudoku.o: sudoku.h sudoku.cpp
-	g++ -c sudoku.cpp -Ofast
-solve.o: sudoku.h solve.cpp
-	g++ -c solve.cpp
+
+# Specify additional dependency for implicit rules to generate target files
+solve: sudoku.o
+sudoku.o: sudoku.h
+
 clean:
-	rm *.o
-	rm solve
+	rm -f *.o
+	rm -f solve
